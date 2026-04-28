@@ -57,4 +57,24 @@ public class Pilha<E> {
 		// TODO
 		return null;
 	}
+
+	void imprimir() {
+		Celula<E> atual = topo;
+		while(atual!=fundo) {
+			System.out.println(atual.getItem()); //Para pegar o valor armazenado na pilha.
+			atual = atual.getProximo(); //Atualiza o atual para referenciar a próxima célula.
+		}
+	}
+
+	void imprime_certo() {
+		Celula<E> atual = topo;
+		certo(atual);
+	}
+
+	void certo(Celula<E> atual) {
+		if(atual!=fundo) {
+			certo(atual.getProximo());
+			System.out.println(atual.getItem());
+		}
+	}
 }

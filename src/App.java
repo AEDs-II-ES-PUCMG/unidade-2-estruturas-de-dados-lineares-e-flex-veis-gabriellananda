@@ -221,6 +221,14 @@ public class App {
 	public static void main(String[] args) {
 		
 		teclado = new Scanner(System.in, Charset.forName("UTF-8"));
+
+        int matricula[]= {5, 6, 2, 4, 3};
+        //topo = 3 | funto = sentinela = null
+        Pilha<Integer> pilha = new Pilha<>();
+        for(int i = 0; i < matricula.length; i++) {
+            pilha.empilhar(matricula[i]);
+        }
+        pilha.imprime_certo();
         
 		nomeArquivoDados = "produtos.txt";
         produtosCadastrados = lerProdutos(nomeArquivoDados);
