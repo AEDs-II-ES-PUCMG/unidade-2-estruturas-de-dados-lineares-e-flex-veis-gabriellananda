@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.io.PrintWriter;
 
 public class App {
 
@@ -21,6 +22,11 @@ public class App {
 
     /** Pilha de pedidos */
     static Pilha<Pedido> pilhaPedidos = new Pilha<>();
+
+    /** Fila de pedidos */
+    static Fila<Pedido> filaPedidos = new Fila<>();
+
+    static Pilha<Produto> pilhaProdutosRecentes = new Pilha<>();
         
     static void limparTela() {
         System.out.print("\033[H\033[2J");
@@ -63,7 +69,7 @@ public class App {
         System.out.println("3 - Procurar por um produto, por nome");
         System.out.println("4 - Iniciar novo pedido");
         System.out.println("5 - Fechar pedido");
-        System.out.println("6 - Listar produtos dos pedidos mais recentes");
+        System.out.println("6 - Listar pedidos mais recentes");
         System.out.println("0 - Sair");
         System.out.print("Digite sua opção: ");
         return Integer.parseInt(teclado.nextLine());
@@ -206,50 +212,170 @@ public class App {
     
     /**
      * Finaliza um pedido, momento no qual ele deve ser armazenado em uma pilha de pedidos.
+     * Finaliza um pedido, momento no qual ele deve ser armazenado em uma fila de pedidos.
      * @param pedido O pedido que deve ser finalizado.
      */
     public static void finalizarPedido(Pedido pedido) {
-    	
-    	// TODO
+
+        /*if (pedido == null) {
+            System.out.println("Nenhum pedido foi iniciado.");
+            return;
+        }
+
+        pilhaPedidos.empilhar(pedido);
+
+        ItemDePedido[] itens = pedido.getItensDoPedido();
+
+        for (int i = 0; i < itens.length; i++) {
+            if (itens[i] != null) {
+                pilhaProdutosRecentes.empilhar(itens[i].getProduto());
+            }
+        }
+
+        System.out.println("Pedido finalizado com sucesso!");
+        System.out.println(pedido);*/
+
+        if (pedido == null) {
+            System.out.println("Nenhum pedido foi iniciado.");
+            return;
+        }
+
+        filaPedidos.enfileirar(pedido);
+
+        System.out.println("Pedido finalizado e inserido na fila de processamento:");
+        System.out.println(pedido);
     }
     
     public static void listarProdutosPedidosRecentes() {
-    	
-    	// TODO
-    }
-    
-	public static void main(String[] args) {
-		
-		teclado = new Scanner(System.in, Charset.forName("UTF-8"));
 
-        int matricula[]= {5, 6, 2, 4, 3};
-        //topo = 3 | funto = sentinela = null
+        cabecalho();
+
+        /*if (pilhaProdutosRecentes.vazia()) {
+            System.out.println("Ainda não há produtos em pedidos finalizados.");
+            return;
+        }
+
+        int quantidade = lerOpcao("Quantos produtos recentes deseja visualizar?", Integer.class);
+
+        try {
+            Pilha<Produto> produtosRecentes = pilhaProdutosRecentes.subPilha(quantidade);
+
+            System.out.println("\nProdutos mais recentemente pedidos:");
+            produtosRecentes.imprimir();
+
+        } catch (IllegalArgumentException erro) {
+            System.out.println(erro.getMessage());
+        }*/
+
+        if (filaPedidos.vazia()) {
+            System.out.println("Não há pedidos na fila.");
+            return;
+        }
+
+        int quantidade = lerOpcao("Quantos pedidos deseja extrair da fila?", Integer.class);
+
+        Fila<Pedido> lote = filaPedidos.extrairLote(quantidade);
+
+        System.out.println("\nPedidos extraídos da fila:");
+
+        lote.imprimir();
+    }
+
+    public static void testePreliminarFilaCaracteres() {
+        Fila<Character> filaCaracteres = new Fila<>();
+        String nomeCompleto = "Gabriella Fernanda";
+
+        for (int i = 0; i < nomeCompleto.length(); i++) {
+            filaCaracteres.enfileirar(nomeCompleto.charAt(i));
+        }
+
+        System.out.println("Teste preliminar da fila de caracteres");
+        System.out.println("Caracteres enfileirados:");
+        filaCaracteres.imprimir();
+
+        System.out.println("Ocorrências de 'a': " + filaCaracteres.contarOcorrencias('a'));
+
+        System.out.println("Primeiro caractere desenfileirado: " + filaCaracteres.desenfileirar());
+
+        System.out.println("Fila após desenfileirar:");
+        filaCaracteres.imprimir();
+    }
+
+    public static void salvarPedidosEmArquivo(String nomeArquivoPedidos) {
+        try (PrintWriter gravador = new PrintWriter(nomeArquivoPedidos, Charset.forName("UTF-8"))) {
+            gravador.print(filaPedidos.toString());
+            System.out.println("Pedidos salvos em arquivo: " + nomeArquivoPedidos);
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar os pedidos em arquivo: " + e.getMessage());
+        }
+    }
+        
+	public static void main(String[] args) {
+
+        teclado = new Scanner(System.in, Charset.forName("UTF-8"));
+
+        /*int matricula[] = {7, 9, 6, 5, 8, 4};
+
         Pilha<Integer> pilha = new Pilha<>();
-        for(int i = 0; i < matricula.length; i++) {
+
+        System.out.println("=== TESTE PRELIMINAR DA PILHA ===");
+
+        for (int i = 0; i < matricula.length; i++) {
             pilha.empilhar(matricula[i]);
         }
+
+        System.out.println("\nConteúdo atual da pilha:");
         pilha.imprime_certo();
-        
-		nomeArquivoDados = "produtos.txt";
+
+        System.out.println("\nTestando desempilhar...");
+        System.out.println("Elemento removido: " + pilha.desempilhar());
+
+        System.out.println("\nPilha após desempilhar:");
+        pilha.imprime_certo();
+
+        pausa();
+
+        nomeArquivoDados = "produtos.txt";
         produtosCadastrados = lerProdutos(nomeArquivoDados);
-        
+
+        Pedido pedido = null;*/
+
+        testePreliminarFilaCaracteres();
+        pausa();
+
+        nomeArquivoDados = "produtos.txt";
+        produtosCadastrados = lerProdutos(nomeArquivoDados);
+
         Pedido pedido = null;
-        
+
         int opcao = -1;
-      
-        do{
+
+        do {
             opcao = menu();
+
             switch (opcao) {
+
                 case 1 -> listarTodosOsProdutos();
+
                 case 2 -> mostrarProduto(localizarProduto());
+
                 case 3 -> mostrarProduto(localizarProdutoDescricao());
+
                 case 4 -> pedido = iniciarPedido();
-                case 5 -> finalizarPedido(pedido);
+
+                case 5 -> {
+                    finalizarPedido(pedido);
+                    pedido = null;
+                }
+
                 case 6 -> listarProdutosPedidosRecentes();
             }
-            pausa();
-        }while(opcao != 0);       
 
-        teclado.close();    
+            pausa();
+
+        } while (opcao != 0);
+
+        salvarPedidosEmArquivo("pedidos.txt");
+
+        teclado.close();
     }
-}

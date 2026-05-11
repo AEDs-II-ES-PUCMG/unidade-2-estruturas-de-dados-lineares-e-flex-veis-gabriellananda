@@ -6,11 +6,9 @@ public class Pilha<E> {
 	private Celula<E> fundo;
 
 	public Pilha() {
-
 		Celula<E> sentinela = new Celula<E>();
 		fundo = sentinela;
 		topo = sentinela;
-
 	}
 
 	public boolean vazia() {
@@ -18,26 +16,21 @@ public class Pilha<E> {
 	}
 
 	public void empilhar(E item) {
-
 		topo = new Celula<E>(item, topo);
 	}
 
 	public E desempilhar() {
-
 		E desempilhado = consultarTopo();
 		topo = topo.getProximo();
 		return desempilhado;
-
 	}
 
 	public E consultarTopo() {
-
 		if (vazia()) {
 			throw new NoSuchElementException("Nao há nenhum item na pilha!");
 		}
 
 		return topo.getItem();
-
 	}
 
 	/**
@@ -53,12 +46,35 @@ public class Pilha<E> {
 	 * @throws IllegalArgumentException se a pilha não contém numItens elementos.
 	 */
 	public Pilha<E> subPilha(int numItens) {
-		
-		// TODO
-		return null;
+
+		if (numItens < 0) {
+			throw new IllegalArgumentException("A quantidade de itens não pode ser negativa.");
+		}
+
+		Pilha<E> auxiliar = new Pilha<>();
+		Pilha<E> resultado = new Pilha<>();
+
+		Celula<E> atual = topo;
+		int contador = 0;
+
+		while (atual != fundo && contador < numItens) {
+			auxiliar.empilhar(atual.getItem());
+			atual = atual.getProximo();
+			contador++;
+		}
+
+		if (contador < numItens) {
+			throw new IllegalArgumentException("A pilha não possui " + numItens + " itens.");
+		}
+
+		while (!auxiliar.vazia()) {
+			resultado.empilhar(auxiliar.desempilhar());
+		}
+
+		return resultado;
 	}
 
-	void imprimir() {
+	public void imprimir() {
 		Celula<E> atual = topo;
 		while(atual!=fundo) {
 			System.out.println(atual.getItem()); //Para pegar o valor armazenado na pilha.
